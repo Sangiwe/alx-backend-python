@@ -8,7 +8,7 @@ def stream_users_in_batches(batch_size):
         conn = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='sql-Software-0745464042', 
+            password='sql-Software-0745464042',
             database='ALX_prodev'
         )
         cursor = conn.cursor(dictionary=True)
@@ -23,13 +23,9 @@ def stream_users_in_batches(batch_size):
         if batch:
             yield batch
 
-    except mysql.connector.Error as e:
-        print(f"Database error: {e}")
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        cursor.close()
+        conn.close()
 
 def batch_processing(batch_size):
     """
