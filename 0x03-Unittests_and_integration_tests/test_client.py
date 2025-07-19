@@ -39,7 +39,7 @@ class TestGithubOrgClient(unittest.TestCase):
             client = GithubOrgClient("test")
             result = client._public_repos_url
             self.assertEqual(
-              result, 
+              result,
               "https://api.github.com/orgs/test/repos"
             )
 
