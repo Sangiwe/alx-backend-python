@@ -86,7 +86,7 @@ class MockResponse:
         "expected_repos": ["episodes.dart", "repo2"],
         "apache2_repos": ["episodes.dart"]
     }
-]).expand()
+])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration tests for GithubOrgClient.public_repos."""
 
