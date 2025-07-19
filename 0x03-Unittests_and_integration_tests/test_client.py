@@ -104,7 +104,7 @@ class MockResponse:
         "expected_repos": ["episodes.dart", "repo2"],
         "apache2_repos": ["episodes.dart"]
     }
-]).expand()
+])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration tests for GithubOrgClient.public_repos"""
 
@@ -121,7 +121,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                 return MockResponse(cls.repos_payload)
             return None
 
-        mock_get.side_effect = lambda url: side_effect(url)
+        cls.mock_get.side_effect = side_effect
 
     @classmethod
     def tearDownClass(cls):
