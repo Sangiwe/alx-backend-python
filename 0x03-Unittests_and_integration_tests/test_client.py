@@ -105,8 +105,6 @@ class MockResponse:
         "apache2_repos": ["episodes.dart"]
     }
 ])
-
-
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration tests for GithubOrgClient.public_repos"""
 
