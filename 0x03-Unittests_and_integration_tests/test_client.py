@@ -7,6 +7,7 @@ from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
 from parameterized import parameterized_class
 from client import GithubOrgClient
+from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -78,13 +79,10 @@ class MockResponse:
 
 @parameterized_class([
     {
-        "org_payload": {"repos_url": "https://api.github.com/orgs/google/repos"},
-        "repos_payload": [
-            {"name": "episodes.dart", "license": {"key": "apache-2.0"}},
-            {"name": "repo2", "license": {"key": "mit"}},
-        ],
-        "expected_repos": ["episodes.dart", "repo2"],
-        "apache2_repos": ["episodes.dart"]
+        "org_payload": org_payload,
+        "repos_payload": repos_payload, 
+        "expected_repos": expected_repos,
+        "apache2_repos": apache2_repos
     }
 ])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
