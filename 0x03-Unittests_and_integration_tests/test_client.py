@@ -91,16 +91,16 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.get_patcher = patch("requests.get")
-        mock_get = cls.get_patcher.start()
+        cls.mock_get = cls.get_patcher.start()
 
         def side_effect(url):
             if url == "https://api.github.com/orgs/google":
                 return MockResponse(cls.org_payload)
-            if url == cls.org_payload["repos_url"]:
+            elif url == cls.org_payload.get["repos_url"]:
                 return MockResponse(cls.repos_payload)
-            return None
+            return MockResponse({})
 
-        mock_get.side_effect = side_effect
+        cls.mock_get.side_effect = side_effect
 
     @classmethod
     def tearDownClass(cls):
