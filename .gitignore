@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Virtual environment
+venv/
+py310env/
+
+# VS Code settings
+.vscode/
+
+# Environment files
+.env
+
+# Django static and media (if generated)
+staticfiles/
+media/
+
+# MacOS system files
+.DS_Store
