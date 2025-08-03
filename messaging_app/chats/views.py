@@ -6,6 +6,8 @@ from rest_framework import viewsets, status, filters
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import PermissionDenied
 from .permissions import IsParticipantOfConversation
+from rest_framework.response import Response
+
 
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
@@ -44,6 +46,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         if user not in conversation.participants.all():
-            raise PermissionDenied("You are not a participant of this conversation.")
+            return Response({'detail': 'You are not a participant of this conversation'},
+                        status=status.HTTP_403_FORBIDDEN)
 
         serializer.save(sender=user)
