@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -7,10 +7,21 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class IsParticipantOfConversation(BasePermission):
     """
-    Allows access only to participants of the conversation.
+    Custom permission to only allow participants of a conversation
+    to view, create, update, or delete messages.
     """
 
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+
     def has_object_permission(self, request, view, obj):
-        # Ensure the user is either the sender or recipient of the message/conversation
         user = request.user
-        return user == obj.sender or user == obj.recipient
+
+        # Allow only if user is sender or recipient
+        is_participant = user == obj.sender or user == obj.recipient
+
+        # Only allow these methods for participants
+        if request.method in ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']:
+            return is_participant
+
+        return False
