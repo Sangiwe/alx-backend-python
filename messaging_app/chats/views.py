@@ -29,3 +29,6 @@ class MessageViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Automatically set the sender to the current user
         serializer.save(sender=self.request.user)
+
+    def get_queryset(self):
+        return Message.objects.filter(sender=self.request.user) | Message.objects.filter(receiver=self.request.user)
