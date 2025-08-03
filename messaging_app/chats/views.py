@@ -7,6 +7,9 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import PermissionDenied
 from .permissions import IsParticipantOfConversation
 from rest_framework.response import Response
+from .filters import MessageFilter
+from .pagination import MessagePagination
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -24,29 +27,28 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 
 class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated, IsParticipantOfConversation]
-    filter_backends = [filters.OrderingFilter]
+    pagination_class = MessagePagination
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_class = MessageFilter
     ordering_fields = ['sent_at']
-
-    def get_queryset(self):
-        conversation_id = self.request.query_params.get('conversation_id')
-        user = self.request.user
-
-        if not conversation_id:
-            return Message.objects.none()
-
-        return Message.objects.filter(
-            conversation__id=conversation_id,
-            conversation__participants=user
-        )
 
     def perform_create(self, serializer):
         conversation = serializer.validated_data.get('conversation')
         user = self.request.user
 
         if user not in conversation.participants.all():
-            return Response({'detail': 'You are not a participant of this conversation'},
-                        status=status.HTTP_403_FORBIDDEN)
+            return Response({'detail': 'You are not a participant of this conversation.'},
+                            status=status.HTTP_403_FORBIDDEN)
 
         serializer.save(sender=user)
+
+    def get_queryset(self):
+        user = self.request.user
+        return Message.objects.filter(
+            sender=user
+        ) | Message.objects.filter(
+            recipient=user
+        )
